@@ -40,10 +40,23 @@ Abrí **http://127.0.0.1:4173**. El service worker funciona en producción; no s
 
 En la demo, los controles «Simular» representan cambios del operador/API municipal. Las pestañas del mismo navegador reciben cambios mediante eventos `storage`. En Supabase se utiliza Realtime y los controles de simulación se ocultan; un operador actualiza los catálogos/estados desde una herramienta administrativa autorizada.
 
-## Conectar Supabase
+## Usar la demo conectada a Supabase
 
-1. Creá un proyecto Supabase propio. Este repositorio no contiene credenciales reales.
-2. En SQL Editor ejecutá en orden los dos archivos de `supabase/migrations/`. También podés usar la CLI:
+El repositorio privado está en [GitHub](https://github.com/IgnacioMaidana7/san-francisco-conecta). El perfil `.env.conectado` apunta al [proyecto Supabase del TP5](https://supabase.com/dashboard/project/wlnxdhalcxnnqbungluy) y trae las claves públicas que usa el navegador. PostgreSQL, Auth, Storage, Realtime y el cron de push ya están configurados.
+
+```sh
+npm ci
+npm run dev:conectado
+```
+
+Abrí http://127.0.0.1:5173 y creá una cuenta de prueba. Para esta demo, el registro da acceso inmediato sin verificar el correo. Usá datos ficticios. Para verificar direcciones y enviar correos de recuperación a usuarios externos se necesita configurar un proveedor SMTP.
+
+Para usar la PWA conectada y probar las notificaciones, ejecutá `npm run build:conectado` y `npm run preview`. Abrí http://127.0.0.1:4173 y elegí **Notificaciones → Activar push** para autorizar este navegador. En un teléfono físico, la PWA necesita una URL HTTPS.
+
+## Conectar otro proyecto Supabase
+
+1. Creá un proyecto Supabase propio si querés una instancia independiente.
+2. En SQL Editor ejecutá los archivos de `supabase/migrations/` en orden. También podés usar la CLI:
 
 ```sh
 supabase login
@@ -69,7 +82,7 @@ Las migraciones crean las tablas, índices, RLS, funciones transaccionales, buck
 
 ## Push configurable
 
-Ver [configuración completa](docs/PUSH.md). Incluye service worker, alta/baja de suscripciones y Edge Function `send-push` para entregar avisos con Web Push/VAPID. Se necesita desplegar esa función, cargar secretos y configurar un disparo periódico en un servicio de cron. No hay entrega remota activa por defecto.
+La demo conectada usa la función `send-push` y Supabase Cron. Cada persona elige si habilita push en su dispositivo. Para reproducirlo en otro proyecto, seguí la [configuración de Web Push](docs/PUSH.md).
 
 Los temporizadores y recordatorios locales se verifican cada 30 segundos mientras la aplicación está visible y al volver a ella. Para avisar con la app cerrada hace falta el cron remoto. La frecuencia «Resumen a las 24 horas» difiere cada aviso 24 horas; no agrupa múltiples avisos en un único mensaje. Cambiar preferencias afecta la creación de avisos futuros y el envío push pendiente; no borra el historial.
 
@@ -109,8 +122,7 @@ docs/                      Informe, pruebas, fuentes y capturas
 - [Informe de arquitectura y cumplimiento](docs/INFORME.md).
 - [Guion de demostración](docs/DEMOSTRACION.md).
 - [Fuentes y material de referencia](docs/FUENTES.md). La guía original está en `docs/referencias/Guia-TP.pdf`, páginas 5–8.
-- Pendientes para servicios remotos: proyecto y claves públicas de Supabase, SMTP si se exige confirmación, claves VAPID, despliegue de Edge Function, cron y dominio HTTPS.
+- Para probar la PWA en teléfonos quedan el alojamiento HTTPS de la aplicación y la prueba en dispositivos físicos. SMTP se requiere si la entrega usa verificación de correo o recuperación de contraseña.
 - Pendientes para uso municipal: APIs y autorización oficiales, identidades tributarias verificadas, catálogo real de estaciones/zonas/alarmas, horarios y tarifas oficiales, operación administrativa y revisión de privacidad/retención. Este proyecto académico no sustituye esos sistemas.
-- Pendiente opcional: publicar el repositorio local en una cuenta GitHub elegida por el autor. No se creó un repositorio remoto ni se publicaron datos de esta carpeta.
 
 Para servir `dist/` usá un alojamiento estático con fallback de rutas a `index.html` (incluido ejemplo `public/_redirects`). Supabase se consume por HTTPS desde la PWA; no se necesita un servidor Node en producción.

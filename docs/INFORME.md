@@ -28,7 +28,7 @@ flowchart TB
     realtime[Realtime]
     mapa[Leaflet + OpenStreetMap]
     sw[Service worker\nCaché público + recepción push]
-    edge[Edge Function + cron externo\nWeb Push / VAPID]
+    edge[Edge Function + Supabase Cron\nWeb Push / VAPID]
     vecino --> ui
     ui --> reglas
     ui --> puerto
@@ -71,7 +71,7 @@ flowchart TB
 | Alertas cercanas                      | Eventos locales o disparador SQL que aplica zonas/cercanía y categorías                      |
 | Estacionamiento                       | Zonas y tarifas ilustrativas, patente, pago demo, reloj, extensión, finalización e historial |
 | Notificaciones                        | Historial, lectura, enlace interno, categorías, zonas y frecuencia inmediata/24 h/pausa      |
-| Push                                  | Suscripción/baja, service worker y función de entrega, pendientes de claves y despliegue     |
+| Push                                  | Suscripción/baja, service worker, función desplegada y cron con credenciales en Vault        |
 
 ## Seguridad, privacidad y funcionamiento sin conexión
 
@@ -99,6 +99,6 @@ flowchart TB
 
 La validación combina pruebas de reglas, ejecución de las migraciones en PostgreSQL WASM, aislamiento entre dos usuarios y pruebas funcionales de navegador. El detalle reproducible y las mediciones se encuentran en `PRUEBAS.md`.
 
-El despliegue alojado de Supabase (Auth, Storage HTTP y Realtime), un envío push real y la validación en teléfonos físicos requieren las credenciales y dispositivos correspondientes. La prueba SQL reproduce los contratos de Auth/Storage, pero no simula su infraestructura de red. El prototipo no declara cumplimiento legal ni certifica canales de emergencia.
+Se comprobó el despliegue alojado de Supabase con dos cuentas, incluidas autenticación, Storage HTTP y Realtime. La prueba SQL local cubre reglas del dominio y aislamiento sin depender de la red. El informe de pruebas documenta el alcance de la validación push y los pendientes en teléfonos físicos.
 
 La escalabilidad está contemplada en la separación por funcionalidades, índices por propietario, servicios administrados y carga por ruta. Para muchos usuarios se necesitan paginación, límites de carga, roles administrativos y una cola push con bloqueos. Estas mejoras no son necesarias para demostrar los recorridos del TP, pero sí para convertirlo en un servicio municipal operativo.

@@ -4,17 +4,17 @@ Fecha: 21/11/2026. Entorno: Windows, Node.js 22.14.0, compilación de producció
 
 ## Resultados
 
-| Comprobación                                 | Resultado                                                                      |
-| -------------------------------------------- | ------------------------------------------------------------------------------ |
-| TypeScript estricto y `npm run build`        | Correcto; manifiesto, service worker y recursos instalables generados          |
-| `npm test`                                   | 15 pruebas aprobadas: 7 de reglas y 8 de migraciones/aislamiento/operaciones   |
-| Playwright: recorridos Chromium móvil        | 7 pruebas completas aprobadas                                                  |
-| Playwright + axe: Chromium, WebKit y Firefox | 3 pruebas aprobadas: ocho pantallas y menú móvil, WCAG A/AA 2.0 y 2.1          |
-| Auditoría de dependencias `npm audit`        | 0 vulnerabilidades informadas, incluidas dependencias de desarrollo            |
-| Migraciones PostgreSQL                       | Ambas ejecutadas en PGlite con dos cuentas y contratos mínimos de Auth/Storage |
-| Función push                                 | Comprobación de tipos Deno correcta; envío remoto pendiente de configuración   |
-| Capturas                                     | Inicio móvil/escritorio y estacionamiento móvil, en `capturas/`                |
-| Lighthouse móvil simulado                    | Rendimiento 94, accesibilidad 100, buenas prácticas 100, SEO 100               |
+| Comprobación                                 | Resultado                                                                                                  |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| TypeScript estricto y `npm run build`        | Correcto; manifiesto, service worker y recursos instalables generados                                      |
+| `npm test`                                   | 16 pruebas aprobadas. 7 de reglas y 9 de migraciones, aislamiento y operaciones                            |
+| Playwright: recorridos Chromium móvil        | 7 pruebas completas aprobadas                                                                              |
+| Playwright + axe: Chromium, WebKit y Firefox | 3 pruebas aprobadas: ocho pantallas y menú móvil, WCAG A/AA 2.0 y 2.1                                      |
+| Auditoría de dependencias `npm audit`        | 0 vulnerabilidades informadas, incluidas dependencias de desarrollo                                        |
+| Migraciones PostgreSQL                       | Ejecutadas en PGlite y en el proyecto remoto de Supabase                                                   |
+| Función push                                 | Desplegada en Supabase. El cron registra HTTP 200 y la función rechaza peticiones sin secreto con HTTP 401 |
+| Capturas                                     | Inicio móvil/escritorio y estacionamiento móvil, en `capturas/`                                            |
+| Lighthouse móvil simulado                    | Rendimiento 94, accesibilidad 100, buenas prácticas 100, SEO 100                                           |
 
 ### Flujos automatizados de extremo a extremo
 
@@ -39,6 +39,7 @@ Las pruebas usan PostgreSQL WASM, sin Docker ni credenciales externas. Ejecutan 
 - Validación de minutos, bloqueo de sesiones activas duplicadas y extensión con tarifa calculada en servidor.
 - Seguimiento inicial de reclamos y rechazo de metadatos de adjuntos de otra cuenta.
 - Aislamiento de carpetas privadas de Storage mediante las políticas SQL.
+- Renovación de la suscripción push y rechazo de cambios desde otra cuenta.
 - Alertas de alarmas solo para zonas suscriptas y deduplicación de vencimientos.
 - Revocación de acceso del vecino a funciones internas y recordatorios globales.
 
@@ -76,14 +77,18 @@ La herramienta conserva dos diagnósticos heurísticos de error: considera sin l
 
 Las advertencias restantes son consultas a arrays pequeños (3 zonas/7 categorías), cargas secuenciales de hasta tres archivos para poder compensar fallos, envío acotado de notificaciones y una URL temporal cuyo consumidor la revoca después de abrir el archivo. El resultado numérico de esa herramienta no se utiliza como certificación de seguridad.
 
+## Demo conectada verificada
+
+Se usó un proyecto gratuito separado en Supabase. El registro desde la aplicación funciona en modo académico con acceso inmediato, y se verificaron el inicio de sesión, el aislamiento de filas entre dos cuentas, la descarga de un adjunto con URL firmada, el rechazo del acceso desde otra cuenta y la recepción de un evento de reclamo por WebSocket. Un cedulón se pagó en modo simulado y un segundo intento sobre la misma obligación fue rechazado. Se eliminaron las cuentas y archivos de prueba.
+
+El cron de un minuto está activo. Chrome registró una suscripción Web Push real, recibió un aviso remoto generado por un pago simulado y mostró el aviso en el service worker. También se verificaron el aviso local y el rechazo de peticiones sin el secreto del cron.
+
 ## Pendientes de aceptación externa
 
 | Prueba                                             | Configuración necesaria                                                           |
 | -------------------------------------------------- | --------------------------------------------------------------------------------- |
-| Registro/login/logout y confirmación de correo     | Proyecto Supabase, claves públicas y configuración Auth/SMTP                      |
-| Adjuntos reales con URL firmada                    | Bucket en el proyecto remoto, usuario y conexión                                  |
-| Realtime entre dos dispositivos                    | Proyecto remoto con publicación y políticas de las migraciones                    |
-| Push con app cerrada y aviso de vencimiento        | VAPID, Edge Function desplegada, cron, HTTPS y permiso del dispositivo            |
+| Verificación y recuperación por correo             | Proveedor SMTP y configuración de confirmación                                    |
+| Prueba de push con app cerrada en teléfonos        | Alojamiento HTTPS y permiso en un dispositivo físico                              |
 | Instalación y notificaciones en iOS/Android reales | Dispositivos físicos y dominio HTTPS                                              |
 | Información municipal operativa                    | APIs autorizadas y datos oficiales de estaciones, alarmas, tarifas y obligaciones |
 

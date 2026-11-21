@@ -101,9 +101,9 @@ export function useAction() {
     setBusy(true);
     setMessage("");
     try {
-      await action();
+      const result = await action();
       await refresh();
-      setMessage(success);
+      setMessage(typeof result === "string" ? result : success);
       setFailed(false);
       return true;
     } catch (e) {

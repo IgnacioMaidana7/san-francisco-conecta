@@ -42,13 +42,15 @@ export class SupabaseRepository implements Repository {
     if (error) throw error;
   }
   async signUp(email: string, password: string, name: string) {
-    const { error } = await this.client.auth.signUp({
+    const { data, error } = await this.client.auth.signUp({
       email,
       password,
       options: { data: { name }, emailRedirectTo: window.location.origin },
     });
     if (error) throw error;
-    return "Cuenta creada. Revisá tu correo para confirmar el acceso si la confirmación está activada.";
+    return data.session
+      ? "Cuenta creada. Ya podés usar los servicios."
+      : "Cuenta creada. Revisá tu correo para confirmar el acceso.";
   }
   async signOut() {
     if ("serviceWorker" in navigator) {

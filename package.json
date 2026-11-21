@@ -8,7 +8,9 @@
   },
   "scripts": {
     "dev": "vite --host 127.0.0.1",
+    "dev:conectado": "vite --host 127.0.0.1 --mode conectado",
     "build": "tsc -b && vite build",
+    "build:conectado": "tsc -b && vite build --mode conectado",
     "preview": "node scripts/serve.mjs",
     "test": "vitest run",
     "test:e2e": "playwright test",

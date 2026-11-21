@@ -1,8 +1,8 @@
 # Configuración de notificaciones push
 
-La bandeja de avisos funciona sin push. La entrega con la aplicación cerrada requiere HTTPS, permiso del navegador, una suscripción Web Push, claves VAPID y la función remota. No está activada por defecto.
+La bandeja de avisos funciona sin push. El proyecto Supabase del TP5 tiene VAPID, la función `send-push` y un cron de un minuto. Para usarlo, compilá con `npm run build:conectado`, ejecutá `npm run preview` y activá push desde Notificaciones. Cada dispositivo necesita permiso del navegador. Para un teléfono físico, serví la app por HTTPS.
 
-## Preparar las claves y el servidor
+## Preparar las claves y el servidor en otro proyecto
 
 1. Generar un par VAPID con una herramienta Web Push en una terminal privada:
 
@@ -34,14 +34,19 @@ supabase functions deploy send-push
 
 ## Programar la entrega
 
-Configurar un programador externo para llamar **cada minuto**, sin ejecuciones superpuestas, a:
+El TP5 usa [Supabase Cron y Vault](https://supabase.com/docs/guides/functions/schedule-functions). Para reproducirlo:
+
+1. Guardá en Vault `sf_push_url` con la URL completa de la función y `sf_push_cron_secret` con el mismo valor que tiene `PUSH_CRON_SECRET` en los secretos de Edge Functions.
+2. Ejecutá `supabase/setup/push-cron.sql` en SQL Editor. Crea la tarea `sf-conecta-send-push` para llamar a la función una vez por minuto.
+
+Si usás un programador propio, configurá la misma frecuencia sin ejecuciones superpuestas:
 
 ```http
 POST https://TU_PROJECT_REF.supabase.co/functions/v1/send-push
 x-cron-secret: EL_SECRETO_CONFIGURADO
 ```
 
-No se configuró un cron externo ni se utilizaron credenciales reales durante esta entrega. También se puede llamar manualmente desde una herramienta HTTP para una demostración, con el secreto correspondiente.
+Podés comprobar el envío desde el panel de Supabase Cron y los registros de la función. Las solicitudes sin el secreto reciben HTTP 401.
 
 La función:
 
@@ -71,4 +76,4 @@ Los avisos locales de estacionamiento dependen de que la aplicación esté visib
 npx deno check --no-config --no-lock --node-modules-dir=none supabase/functions/send-push/index.ts
 ```
 
-La comprobación de tipos no sustituye la prueba de entrega real. La aceptación con un dispositivo, claves y proyecto propios sigue pendiente de esa configuración externa.
+Los resultados de la comprobación alojada y la entrega a dispositivos figuran en [pruebas](PRUEBAS.md).

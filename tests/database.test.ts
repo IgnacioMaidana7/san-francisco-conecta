@@ -24,6 +24,7 @@ beforeAll(async () => {
   for (const file of [
     "202611210001_initial.sql",
     "202611210002_demo_catalog.sql",
+    "202611210003_push_subscription_upsert.sql",
   ])
     await db.exec(
       await readFile(
@@ -198,6 +199,37 @@ describe("Migraciones, aislamiento y operaciones atómicas", () => {
         )
       ).rows,
     ).toHaveLength(1);
+  });
+  it("permite renovar una suscripción propia sin cambiar la de otra cuenta", async () => {
+    const endpoint = "https://fcm.googleapis.com/fcm/send/prueba";
+    const upsert = `
+      insert into push_subscriptions(user_id, endpoint, subscription)
+      values ($1, $2, $3)
+      on conflict (endpoint) do update set
+        user_id = excluded.user_id,
+        endpoint = excluded.endpoint,
+        subscription = excluded.subscription
+      returning id, subscription
+    `;
+    const initial = JSON.stringify({ endpoint, keys: { auth: "initial" } });
+    const renewed = JSON.stringify({ endpoint, keys: { auth: "renewed" } });
+    const first = await asUser<{ id: string }>(alice, upsert, [
+      alice,
+      endpoint,
+      initial,
+    ]);
+    const second = await asUser<{ id: string }>(alice, upsert, [
+      alice,
+      endpoint,
+      renewed,
+    ]);
+    expect(second.rows[0].id).toBe(first.rows[0].id);
+    await expect(
+      asUser(bob, upsert, [bob, endpoint, initial]),
+    ).rejects.toThrow();
+    expect(
+      (await asUser(bob, "select id from push_subscriptions")).rows,
+    ).toHaveLength(0);
   });
   it("no expone funciones internas ni el disparador global a vecinos", async () => {
     await expect(asUser(alice, "select run_reminders()")).rejects.toThrow(
