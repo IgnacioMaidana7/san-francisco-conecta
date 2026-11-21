@@ -1,0 +1,32 @@
+{
+  "date": "2026-11-21T17:51:27.396Z",
+  "environment": "Lighthouse mobile simulated throttling; localhost; demo mode",
+  "scores": {
+    "performance": 94,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100
+  },
+  "metrics": {
+    "first-contentful-paint": {
+      "value": 2298.5,
+      "display": "2.3 s"
+    },
+    "largest-contentful-paint": {
+      "value": 2540,
+      "display": "2.5 s"
+    },
+    "speed-index": {
+      "value": 2298.5,
+      "display": "2.3 s"
+    },
+    "total-blocking-time": {
+      "value": 90,
+      "display": "90 ms"
+    },
+    "cumulative-layout-shift": {
+      "value": 0.0003944783050390377,
+      "display": "0"
+    }
+  }
+}

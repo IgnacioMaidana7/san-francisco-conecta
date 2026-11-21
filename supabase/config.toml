@@ -1,0 +1,4 @@
+project_id = "san-francisco-conecta"
+
+[functions.send-push]
+verify_jwt = false
