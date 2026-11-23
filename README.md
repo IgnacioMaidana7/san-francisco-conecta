@@ -119,7 +119,7 @@ docs/                      Informe, pruebas, fuentes y capturas
 
 ## Entrega y pendientes externos
 
-- [Informe de arquitectura y cumplimiento](docs/INFORME.md).
+- [Informe técnico del TP5 en PDF](docs/Informe-Tecnico-San-Francisco-Conecta-TP5.pdf) y [resumen técnico en Markdown](docs/INFORME.md).
 - [Guion de demostración](docs/DEMOSTRACION.md).
 - [Fuentes y material de referencia](docs/FUENTES.md). La guía original está en `docs/referencias/Guia-TP.pdf`, páginas 5–8.
 - Para probar la PWA en teléfonos quedan el alojamiento HTTPS de la aplicación y la prueba en dispositivos físicos. SMTP se requiere si la entrega usa verificación de correo o recuperación de contraseña.

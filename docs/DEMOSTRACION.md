@@ -10,7 +10,7 @@ Duración sugerida: 8–10 minutos. Ejecutar `INICIAR.cmd` para desarrollo o `np
 6. **Alarmas.** Mantener la suscripción a Centro. Simular activación de Plaza Cívica y abrir Notificaciones para ver el aviso. Suscribir Norte para mostrar preferencias por zona.
 7. **Estacionamiento.** Elegir Centro, patente `AB123CD` y 60 minutos. Confirmar pago demo. Mostrar el reloj, extender 30 minutos, recargar y finalizar. Ver el comprobante en el historial de pagos.
 8. **Notificaciones.** Desactivar Obras públicas y generar un evento: no aparece un aviso nuevo. Reactivar y repetir. Mostrar pausa y frecuencia de 24 horas. Si se usa la compilación PWA, probar el aviso local y conceder permiso si se desea.
-9. **Arquitectura.** Abrir el informe y explicar el contrato Repository y sus dos adaptadores. Mostrar las migraciones y el resultado de las pruebas. Aclarar que Supabase y push remoto necesitan configuración externa.
+9. **Arquitectura.** Abrir el [informe técnico en PDF](Informe-Tecnico-San-Francisco-Conecta-TP5.pdf) y explicar el contrato Repository y sus dos adaptadores. Mostrar las migraciones, las pruebas y la demo conectada con Supabase y Web Push.
 10. **Offline.** En la compilación PWA, esperar a que se instale el service worker, desconectar la red y recargar. Los datos locales y pantallas siguen disponibles; los mapas necesitan las teselas de internet.
 
 Para demostrar cambios desde dos pestañas, abrir ambas con la misma dirección y puerto. Una acción local se refleja en la otra. En Supabase esta propagación utiliza Realtime.
